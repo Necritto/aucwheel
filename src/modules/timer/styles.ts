@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+type isTimerFinished = {
+  isTimerFinished?: boolean;
+};
+
 export const TimerContainer = styled.div`
   padding: 20px;
   border-radius: 10px;
@@ -11,7 +15,7 @@ export const TimerContainer = styled.div`
   }
 `;
 
-export const TimeBlock = styled.div`
+export const TimeBlock = styled.div<isTimerFinished>`
   display: flex;
   margin: 20px 0;
 
@@ -19,7 +23,7 @@ export const TimeBlock = styled.div`
     display: inherit;
     width: 80px;
     height: 80px;
-    border: 5px solid #1be0af;
+    border: ${(props) => (props.isTimerFinished ? "5px solid #cccccc" : "5px solid #1be0af")};
     border-radius: 5px;
     background-color: #12964d;
     font-size: 50px;
@@ -27,6 +31,7 @@ export const TimeBlock = styled.div`
     justify-content: center;
     align-items: center;
     margin-right: 10px;
+    background-color: ${(props) => (props.isTimerFinished ? "#808080" : "")};
 
     &:last-child {
       margin-right: 0;
