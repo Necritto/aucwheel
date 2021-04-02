@@ -1,10 +1,37 @@
-import React, { memo } from "react";
+import React, { useState, memo, useCallback } from "react";
+import { useSelector, useDispatch, shallowEqual } from "react-redux";
 
 import { randomColor } from "utils/helpers/randomColor";
+import { addLot, deleteLot, clearLots } from "redux/actions/lots";
+import { LotsReducerInterface } from "utils/interfaces/redux";
+import { BaseLotInterface } from "utils/interfaces/lots";
 
-import { LotsContainer, LotsWrapper, LotsTable, ColoredSpan, AddButton, DeleteButton, Input } from "./styles";
+import { LotsContainer, LotsWrapper, LotsTable, AddButton, DeleteButton } from "./styles";
+import Lot from "./Lot/Lot";
 
 const Lots = () => {
+  const [title, setTitle] = useState("");
+  const [total, setTotal] = useState("");
+  const [addToTotal, setAddToTotal] = useState("");
+
+  const lots = useSelector((state: LotsReducerInterface) => state.lotsReducer.lots, shallowEqual);
+  const dispatch = useDispatch();
+
+  const onAddLotHandler = useCallback(() => {
+    const lot: BaseLotInterface = {
+      title: "",
+      total: 0,
+      chance: 0,
+      color: randomColor(),
+    };
+
+    dispatch(addLot(lot));
+  }, [dispatch]);
+
+  const onDeleteLotHandler = useCallback((id: string) => dispatch(deleteLot(id)), [dispatch]);
+
+  const onClearLotsHandler = useCallback(() => dispatch(clearLots()), [dispatch]);
+
   return (
     <LotsContainer>
       <h2>Lots</h2>
@@ -18,33 +45,29 @@ const Lots = () => {
               <th>Total</th>
               <th>+</th>
               <th>
-                <DeleteButton>Clear</DeleteButton>
+                <DeleteButton onClick={onClearLotsHandler}>Clear</DeleteButton>
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>
-                <Input type="text" name="title" />
-              </td>
-              <td>
-                <ColoredSpan color={randomColor()} />
-              </td>
-              <td></td>
-              <td>
-                <Input small={true} type="text" name="total" />
-              </td>
-              <td>
-                <Input small={true} type="text" name="add" placeholder="0" />
-                <AddButton small={true}>+</AddButton>
-              </td>
-              <td>
-                <DeleteButton small={true}>Delete</DeleteButton>
-              </td>
-            </tr>
+            {lots.map((lot) => {
+              return (
+                <Lot
+                  key={lot.id}
+                  lot={lot}
+                  title={title}
+                  total={total}
+                  addToTotal={addToTotal}
+                  setTitle={setTitle}
+                  setTotal={setTotal}
+                  setAddToTotal={setAddToTotal}
+                  onDelete={(id: string) => onDeleteLotHandler(id)}
+                />
+              );
+            })}
           </tbody>
         </LotsTable>
-        <AddButton>Add</AddButton>
+        <AddButton onClick={onAddLotHandler}>Add</AddButton>
       </LotsWrapper>
     </LotsContainer>
   );
