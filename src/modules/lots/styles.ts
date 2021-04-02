@@ -1,12 +1,6 @@
 import styled from "styled-components";
 
-type Small = {
-  small?: boolean;
-};
-
-type Color = {
-  color: string;
-};
+import { SmallButtonInterface } from "utils/interfaces/styled";
 
 export const LotsContainer = styled.div`
   padding: 20px;
@@ -69,28 +63,7 @@ export const LotsTable = styled.table`
   }
 `;
 
-export const Input = styled.input<Small>`
-  width: ${(props) => (props.small ? "80px" : "300px")};
-  height: 30px;
-  color: #cacaca;
-  background-color: #6b6b6b;
-  padding: 5px;
-  border-radius: 3px;
-  border: none;
-  font-size: 18px;
-
-  &::placeholder {
-    color: #a0a0a0;
-  }
-
-  &:focus {
-    &::placeholder {
-      opacity: 0;
-    }
-  }
-`;
-
-export const DeleteButton = styled.button<Small>`
+export const DeleteButton = styled.button<SmallButtonInterface>`
   color: #ffffff;
   background-color: #ff6662;
   width: ${(props) => (props.small ? "80px" : "100px")};
@@ -100,16 +73,7 @@ export const DeleteButton = styled.button<Small>`
   text-align: center;
 `;
 
-export const ColoredSpan = styled.span<Color>`
-  display: inline-block;
-  width: 30px;
-  height: 30px;
-  border-radius: 5px;
-  background-color: ${(props) => props.color};
-  transform: translateY(2px);
-`;
-
-export const AddButton = styled.button<Small>`
+export const AddButton = styled.button<SmallButtonInterface>`
   width: ${(props) => (props.small ? "30px" : "150px")};
   height: ${(props) => (props.small ? "30px" : "40px")};
   margin-left: ${(props) => props.small && "2px"};
@@ -120,4 +84,8 @@ export const AddButton = styled.button<Small>`
   color: #ffffff;
   background-color: #12964d;
   transform: ${(props) => props.small && "translateY(-1px)"};
+
+  &:hover {
+    background-color: #0d6c38;
+  }
 `;

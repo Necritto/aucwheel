@@ -1,8 +1,8 @@
 import React from "react";
 
-import Wheel from "modules/wheel/Wheel";
-import Timer from "modules/timer/Timer";
-import Lots from "modules/lots/Lots";
+import Wheel from "modules/Wheel/Wheel";
+import Timer from "modules/Timer/Timer";
+import Lots from "modules/Lots/Lots";
 
 import { AppContainer } from "./styles";
 
