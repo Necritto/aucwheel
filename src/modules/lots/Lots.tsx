@@ -2,7 +2,7 @@ import React, { useState, memo, useCallback } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 
 import { randomColor } from "utils/helpers/randomColor";
-import { addLot, deleteLot, clearLots, changeLotTitle } from "redux/actions/lots";
+import { addLot, deleteLot, clearLots, changeLotTitle, changeLotTotal } from "redux/actions/lots";
 import { LotsReducerInterface } from "utils/interfaces/redux";
 import { BaseLotInterface } from "utils/interfaces/lots";
 
@@ -33,9 +33,22 @@ const Lots = () => {
   const onKeyPressedHandler = useCallback(
     (key: string, target: EventTarget & HTMLInputElement, id: string) => {
       if (key === "Enter") {
-        if (target.name === "title") {
-          dispatch(changeLotTitle(id, target.value));
+        const targetName = target.name;
+        const trimmedValue = target.value.trim();
+
+        if (targetName === "title") {
+          if (!!!trimmedValue) return alert("Incorrect value!");
+          dispatch(changeLotTitle(id, trimmedValue));
         }
+
+        if (targetName === "total") {
+          if (isNaN(+trimmedValue) || !!!trimmedValue) {
+            return alert("Incorrect value (must be a number)!");
+          }
+
+          dispatch(changeLotTotal(id, +trimmedValue));
+        }
+
         target.blur();
       }
     },
