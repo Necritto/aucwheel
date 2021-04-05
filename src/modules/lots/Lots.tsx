@@ -1,8 +1,16 @@
-import React, { useState, memo, useCallback } from "react";
+import React, { memo, useCallback } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 
 import { randomColor } from "utils/helpers/randomColor";
-import { addLot, deleteLot, clearLots, changeLotTitle, changeLotTotal } from "redux/actions/lots";
+import {
+  addLot,
+  deleteLot,
+  clearLots,
+  changeLotTitle,
+  changeLotTotal,
+  toTotal,
+  changeAddToTotalValue,
+} from "redux/actions/lots";
 import { LotsReducerInterface } from "utils/interfaces/redux";
 import { BaseLotInterface } from "utils/interfaces/lots";
 
@@ -10,8 +18,6 @@ import { LotsContainer, LotsWrapper, LotsTable, AddButton, DeleteButton } from "
 import Lot from "./Lot/Lot";
 
 const Lots = () => {
-  const [addToTotal, setAddToTotal] = useState("");
-
   const lots = useSelector((state: LotsReducerInterface) => state.lotsReducer.lots, shallowEqual);
   const dispatch = useDispatch();
 
@@ -29,6 +35,33 @@ const Lots = () => {
   const onDeleteLotHandler = useCallback((id: string) => dispatch(deleteLot(id)), [dispatch]);
 
   const onClearLotsHandler = useCallback(() => dispatch(clearLots()), [dispatch]);
+
+  const onChangeHandler = useCallback(
+    (id: string, value: string, name: string) => {
+      if (name === "title") {
+        dispatch(changeLotTitle(id, value));
+        return;
+      }
+
+      if (name === "total") {
+        dispatch(changeLotTotal(id, +value));
+        return;
+      }
+
+      if (name === "addToTotal") {
+        dispatch(changeAddToTotalValue(id, +value));
+      }
+    },
+    [dispatch],
+  );
+
+  const onAddToTotal = useCallback(
+    (id: string, value: number) => {
+      dispatch(toTotal(id, value));
+      dispatch(changeAddToTotalValue(id, 0));
+    },
+    [dispatch],
+  );
 
   const onKeyPressedHandler = useCallback(
     (key: string, target: EventTarget & HTMLInputElement, id: string) => {
@@ -78,12 +111,10 @@ const Lots = () => {
                 <Lot
                   key={lot.id}
                   lot={lot}
-                  addToTotal={addToTotal}
-                  setAddToTotal={setAddToTotal}
-                  keyPressed={(key: string, target: EventTarget & HTMLInputElement, id: string) =>
-                    onKeyPressedHandler(key, target, id)
-                  }
-                  onDelete={(id: string) => onDeleteLotHandler(id)}
+                  onAddToTotal={onAddToTotal}
+                  keyPressed={onKeyPressedHandler}
+                  onChange={onChangeHandler}
+                  onDelete={onDeleteLotHandler}
                 />
               );
             })}

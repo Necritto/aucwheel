@@ -7,13 +7,13 @@ import { Input, ColoredSpan } from "./styles";
 
 interface LotPropsInterface {
   lot: LotInterface;
-  addToTotal: string;
-  setAddToTotal: (addToTotal: string) => void;
   keyPressed: (key: string, target: EventTarget & HTMLInputElement, id: string) => void;
+  onAddToTotal: (id: string, value: number) => void;
+  onChange: (id: string, value: string, name: string) => void;
   onDelete: (id: string) => void;
 }
 
-const Lot = ({ lot, addToTotal, setAddToTotal, keyPressed, onDelete }: LotPropsInterface) => {
+const Lot = ({ lot, keyPressed, onAddToTotal, onChange, onDelete }: LotPropsInterface) => {
   return (
     <tr>
       <td>
@@ -21,6 +21,8 @@ const Lot = ({ lot, addToTotal, setAddToTotal, keyPressed, onDelete }: LotPropsI
           type="text"
           name="title"
           onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => keyPressed(e.key, e.currentTarget, lot.id)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(lot.id, e.target.value, e.target.name)}
+          value={lot.title}
         />
       </td>
       <td>
@@ -34,18 +36,22 @@ const Lot = ({ lot, addToTotal, setAddToTotal, keyPressed, onDelete }: LotPropsI
           name="total"
           placeholder="0"
           onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => keyPressed(e.key, e.currentTarget, lot.id)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(lot.id, e.target.value, e.target.name)}
+          value={lot.total}
         />
       </td>
       <td>
         <Input
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAddToTotal(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(lot.id, e.target.value, e.target.name)}
           small={true}
           type="text"
           name="addToTotal"
           placeholder="0"
-          value={addToTotal}
+          value={lot.add}
         />
-        <AddButton small={true}>+</AddButton>
+        <AddButton onClick={() => onAddToTotal(lot.id, +lot.add)} small={true}>
+          +
+        </AddButton>
       </td>
       <td>
         <DeleteButton onClick={() => onDelete(lot.id)} small={true}>
