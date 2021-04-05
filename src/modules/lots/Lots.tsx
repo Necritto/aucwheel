@@ -2,7 +2,7 @@ import React, { useState, memo, useCallback } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 
 import { randomColor } from "utils/helpers/randomColor";
-import { addLot, deleteLot, clearLots } from "redux/actions/lots";
+import { addLot, deleteLot, clearLots, changeLotTitle } from "redux/actions/lots";
 import { LotsReducerInterface } from "utils/interfaces/redux";
 import { BaseLotInterface } from "utils/interfaces/lots";
 
@@ -10,8 +10,6 @@ import { LotsContainer, LotsWrapper, LotsTable, AddButton, DeleteButton } from "
 import Lot from "./Lot/Lot";
 
 const Lots = () => {
-  const [title, setTitle] = useState("");
-  const [total, setTotal] = useState("");
   const [addToTotal, setAddToTotal] = useState("");
 
   const lots = useSelector((state: LotsReducerInterface) => state.lotsReducer.lots, shallowEqual);
@@ -31,6 +29,18 @@ const Lots = () => {
   const onDeleteLotHandler = useCallback((id: string) => dispatch(deleteLot(id)), [dispatch]);
 
   const onClearLotsHandler = useCallback(() => dispatch(clearLots()), [dispatch]);
+
+  const onKeyPressedHandler = useCallback(
+    (key: string, target: EventTarget & HTMLInputElement, id: string) => {
+      if (key === "Enter") {
+        if (target.name === "title") {
+          dispatch(changeLotTitle(id, target.value));
+        }
+        target.blur();
+      }
+    },
+    [dispatch],
+  );
 
   return (
     <LotsContainer>
@@ -55,12 +65,11 @@ const Lots = () => {
                 <Lot
                   key={lot.id}
                   lot={lot}
-                  title={title}
-                  total={total}
                   addToTotal={addToTotal}
-                  setTitle={setTitle}
-                  setTotal={setTotal}
                   setAddToTotal={setAddToTotal}
+                  keyPressed={(key: string, target: EventTarget & HTMLInputElement, id: string) =>
+                    onKeyPressedHandler(key, target, id)
+                  }
                   onDelete={(id: string) => onDeleteLotHandler(id)}
                 />
               );

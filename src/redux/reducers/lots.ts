@@ -3,7 +3,7 @@ import { v4 } from "uuid";
 import { InitialStateInterface } from "utils/interfaces/redux";
 
 import { initialState } from "../initialState";
-import { ADD_LOT, DELETE_LOT, CLEAR_LOTS } from "../actionTypes/actionTypes";
+import { ADD_LOT, DELETE_LOT, CLEAR_LOTS, CHANGE_LOT_TITLE } from "../actionTypes/actionTypes";
 
 export const lotsReducer = (
   state: InitialStateInterface = initialState,
@@ -33,6 +33,13 @@ export const lotsReducer = (
       return {
         ...state,
         lots: [],
+      };
+    case CHANGE_LOT_TITLE:
+      return {
+        ...state,
+        lots: state.lots.map((lot) =>
+          lot.id === payload.id ? Object.assign({}, lot, { title: payload.newTitle }) : lot,
+        ),
       };
     default:
       return state;

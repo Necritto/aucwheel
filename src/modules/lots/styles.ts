@@ -71,6 +71,10 @@ export const DeleteButton = styled.button<SmallButtonInterface>`
   border: none;
   border-radius: 5px;
   text-align: center;
+
+  &:hover {
+    background-color: #ff1d17;
+  }
 `;
 
 export const AddButton = styled.button<SmallButtonInterface>`

@@ -7,24 +7,20 @@ import { Input, ColoredSpan } from "./styles";
 
 interface LotPropsInterface {
   lot: LotInterface;
-  title: string;
-  total: string;
   addToTotal: string;
-  setTitle: (title: string) => void;
-  setTotal: (total: string) => void;
   setAddToTotal: (addToTotal: string) => void;
+  keyPressed: (key: string, target: EventTarget & HTMLInputElement, id: string) => void;
   onDelete: (id: string) => void;
 }
 
-const Lot = ({ lot, title, total, addToTotal, setTitle, setTotal, setAddToTotal, onDelete }: LotPropsInterface) => {
+const Lot = ({ lot, addToTotal, setAddToTotal, keyPressed, onDelete }: LotPropsInterface) => {
   return (
     <tr>
       <td>
         <Input
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
           type="text"
           name="title"
-          value={title}
+          onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => keyPressed(e.key, e.currentTarget, lot.id)}
         />
       </td>
       <td>
@@ -33,12 +29,11 @@ const Lot = ({ lot, title, total, addToTotal, setTitle, setTotal, setAddToTotal,
       <td>{lot.chance > 0 && lot.chance}</td>
       <td>
         <Input
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTotal(e.target.value)}
           small={true}
           type="text"
           name="total"
           placeholder="0"
-          value={total}
+          onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => keyPressed(e.key, e.currentTarget, lot.id)}
         />
       </td>
       <td>
