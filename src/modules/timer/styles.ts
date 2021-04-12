@@ -1,8 +1,6 @@
 import styled from "styled-components";
 
-type isTimerFinished = {
-  isTimerFinished?: boolean;
-};
+import { IsTimerFinishedInterface } from "utils/interfaces/styled";
 
 export const TimerContainer = styled.div`
   padding: 20px;
@@ -15,7 +13,7 @@ export const TimerContainer = styled.div`
   }
 `;
 
-export const TimeBlock = styled.div<isTimerFinished>`
+export const TimeBlock = styled.div<IsTimerFinishedInterface>`
   display: flex;
   margin: 20px 0;
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useMemo, memo } from "react";
+import React, { useEffect } from "react";
 import { shallowEqual, useSelector, useDispatch } from "react-redux";
 
 import { addMin, setSec, setMin, subtractMin } from "redux/actions/timer";
@@ -11,7 +11,7 @@ const Timer = () => {
   const min = useSelector((state: TimerReducerInterface) => state.timerReducer.timerMin, shallowEqual);
   const sec = useSelector((state: TimerReducerInterface) => state.timerReducer.timerSec, shallowEqual);
   const dispatch = useDispatch();
-  const isTimerFinished = useMemo(() => min === 0 && sec === 0, [min, sec]);
+  const isTimerFinished = min === 0 && sec === 0;
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -34,29 +34,20 @@ const Timer = () => {
     return () => {
       clearInterval(timer);
     };
-  });
+  }, [dispatch, min, sec]);
 
-  const onAddMin = useCallback(
-    (value: number) => {
-      dispatch(addMin(min + value));
-    },
-    [min, dispatch],
-  );
+  const onAddMin = (value: number) => {
+    dispatch(addMin(min + value));
+  };
 
-  const onSubtractMin = useCallback(
-    (value: number) => {
-      min > 0 && dispatch(subtractMin(min - value));
-    },
-    [min, dispatch],
-  );
+  const onSubtractMin = (value: number) => {
+    min > 0 && dispatch(subtractMin(min - value));
+  };
 
-  const onSetMin = useCallback(
-    (value: number) => {
-      dispatch(setMin(value));
-      dispatch(setSec(0));
-    },
-    [dispatch],
-  );
+  const onSetMin = (value: number) => {
+    dispatch(setMin(value));
+    dispatch(setSec(0));
+  };
 
   return (
     <TimerContainer>
@@ -75,4 +66,4 @@ const Timer = () => {
   );
 };
 
-export default memo(Timer);
+export default Timer;
