@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from "react";
+import React, { useMemo, useCallback } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 
 import { randomColor } from "utils/helpers/randomColor";
@@ -10,6 +10,7 @@ import {
   changeLotTotal,
   toTotal,
   changeAddToTotalValue,
+  changeLotChance,
 } from "redux/actions/lots";
 import { LotsReducerInterface } from "utils/interfaces/redux";
 import { BaseLotInterface } from "utils/interfaces/lots";
@@ -17,12 +18,15 @@ import { BaseLotInterface } from "utils/interfaces/lots";
 import { LotsContainer, LotsWrapper, LotsTable, AddButton, DeleteButton } from "./styles";
 import Lot from "./Lot/Lot";
 import { toNumber } from "utils/helpers/toNumber";
+import { chanceCalculating } from "utils/helpers/chanceCalculating";
 
 const Lots = () => {
   const lots = useSelector((state: LotsReducerInterface) => state.lotsReducer.lots, shallowEqual);
   const dispatch = useDispatch();
 
-  const onAddLotHandler = useCallback(() => {
+  const inTotal = useMemo(() => lots.reduce((acc, currentValue) => acc + currentValue.total, 0), [lots]);
+
+  const onAddLotHandler = () => {
     const lot: BaseLotInterface = {
       title: "",
       total: 0,
@@ -31,11 +35,11 @@ const Lots = () => {
     };
 
     dispatch(addLot(lot));
-  }, [dispatch]);
+  };
 
-  const onDeleteLotHandler = useCallback((id: string) => dispatch(deleteLot(id)), [dispatch]);
+  const onDeleteLotHandler = (id: string) => dispatch(deleteLot(id));
 
-  const onClearLotsHandler = useCallback(() => dispatch(clearLots()), [dispatch]);
+  const onClearLotsHandler = () => dispatch(clearLots());
 
   const onChangeHandler = useCallback(
     (id: string, value: string, name: string) => {
@@ -56,37 +60,39 @@ const Lots = () => {
     [dispatch],
   );
 
-  const onAddToTotal = useCallback(
-    (id: string, value: number) => {
-      dispatch(toTotal(id, value));
-      dispatch(changeAddToTotalValue(id, 0));
-    },
-    [dispatch],
-  );
+  const changeLotsChance = () => {
+    lots.forEach((lot) => {
+      dispatch(changeLotChance(lot.id, chanceCalculating(lot.total, inTotal)));
+    });
+  };
 
-  const onKeyPressedHandler = useCallback(
-    (key: string, target: EventTarget & HTMLInputElement, id: string) => {
-      if (key !== "Enter") return;
+  const onAddToTotal = (id: string, value: number) => {
+    dispatch(toTotal(id, value));
+    dispatch(changeAddToTotalValue(id, 0));
+    changeLotsChance(); // FIXME: double click to refresh chance (old state data)
+  };
 
-      const targetName = target.name;
-      const trimmedValue = target.value.trim();
+  const onKeyPressedHandler = (key: string, target: EventTarget & HTMLInputElement, id: string) => {
+    if (key !== "Enter") return;
 
-      switch (targetName) {
-        case "title":
-          if (!!!trimmedValue) return alert("Incorrect value!");
-          dispatch(changeLotTitle(id, trimmedValue));
-          break;
-        case "total":
-          dispatch(changeLotTotal(id, toNumber(trimmedValue)));
-          break;
-        default:
-          return;
-      }
+    const targetName = target.name;
+    const trimmedValue = target.value.trim();
 
-      target.blur();
-    },
-    [dispatch],
-  );
+    switch (targetName) {
+      case "title":
+        if (!!!trimmedValue) return alert("Incorrect value!");
+        dispatch(changeLotTitle(id, trimmedValue));
+        break;
+      case "total":
+        dispatch(changeLotTotal(id, toNumber(trimmedValue)));
+        changeLotsChance();
+        break;
+      default:
+        return;
+    }
+
+    target.blur();
+  };
 
   return (
     <LotsContainer>
@@ -126,4 +132,4 @@ const Lots = () => {
   );
 };
 
-export default memo(Lots);
+export default Lots;

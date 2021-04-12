@@ -20,33 +20,33 @@ const Lot = ({ lot, keyPressed, onAddToTotal, onChange, onDelete }: LotPropsInte
         <Input
           type="text"
           name="title"
-          onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => keyPressed(e.key, e.currentTarget, lot.id)}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(lot.id, e.target.value, e.target.name)}
+          onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => keyPressed(e.key, e.currentTarget, lot.id)}
           value={lot.title}
         />
       </td>
       <td>
         <ColoredSpan color={lot.color} />
       </td>
-      <td></td>
+      <td>{lot.chance}</td>
       <td>
         <Input
           small={true}
           type="text"
           name="total"
           placeholder="0"
-          onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => keyPressed(e.key, e.currentTarget, lot.id)}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(lot.id, e.target.value, e.target.name)}
+          onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => keyPressed(e.key, e.currentTarget, lot.id)}
           value={lot.total}
         />
       </td>
       <td>
         <Input
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(lot.id, e.target.value, e.target.name)}
           small={true}
           type="text"
           name="addToTotal"
           placeholder="0"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(lot.id, e.target.value, e.target.name)}
           value={lot.add}
         />
         <AddButton onClick={() => onAddToTotal(lot.id, lot.add)} small={true}>

@@ -9,6 +9,7 @@ import {
   CLEAR_LOTS,
   CHANGE_LOT_TITLE,
   CHANGE_LOT_TOTAL,
+  CHANGE_LOT_CHANCE,
   ADD_TO_TOTAL,
   CHANGE_ADD_TO_TOTAL_VALUE,
 } from "../actionTypes/actionTypes";
@@ -46,16 +47,12 @@ export const lotsReducer = (
     case CHANGE_LOT_TITLE:
       return {
         ...state,
-        lots: state.lots.map((lot) =>
-          lot.id === payload.id ? Object.assign({}, lot, { title: payload.newTitle }) : lot,
-        ),
+        lots: state.lots.map((lot) => (lot.id === payload.id ? Object.assign({}, lot, { title: payload.value }) : lot)),
       };
     case CHANGE_LOT_TOTAL: {
       return {
         ...state,
-        lots: state.lots.map((lot) =>
-          lot.id === payload.id ? Object.assign({}, lot, { total: payload.newTotal }) : lot,
-        ),
+        lots: state.lots.map((lot) => (lot.id === payload.id ? Object.assign({}, lot, { total: payload.value }) : lot)),
       };
     }
     case ADD_TO_TOTAL:
@@ -69,6 +66,13 @@ export const lotsReducer = (
       return {
         ...state,
         lots: state.lots.map((lot) => (lot.id === payload.id ? Object.assign({}, lot, { add: payload.value }) : lot)),
+      };
+    case CHANGE_LOT_CHANCE:
+      return {
+        ...state,
+        lots: state.lots.map((lot) =>
+          lot.id === payload.id ? Object.assign({}, lot, { chance: payload.value }) : lot,
+        ),
       };
     default:
       return state;
