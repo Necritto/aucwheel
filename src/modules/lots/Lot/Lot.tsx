@@ -28,7 +28,7 @@ const Lot = ({ lot, keyPressed, onAddToTotal, onChange, onDelete }: LotPropsInte
       <td>
         <ColoredSpan color={lot.color} />
       </td>
-      <td>{lot.chance > 0 && lot.chance}</td>
+      <td></td>
       <td>
         <Input
           small={true}
@@ -49,7 +49,7 @@ const Lot = ({ lot, keyPressed, onAddToTotal, onChange, onDelete }: LotPropsInte
           placeholder="0"
           value={lot.add}
         />
-        <AddButton onClick={() => onAddToTotal(lot.id, +lot.add)} small={true}>
+        <AddButton onClick={() => onAddToTotal(lot.id, lot.add)} small={true}>
           +
         </AddButton>
       </td>

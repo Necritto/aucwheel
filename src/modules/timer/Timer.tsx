@@ -34,7 +34,7 @@ const Timer = () => {
     return () => {
       clearInterval(timer);
     };
-  });
+  }, [dispatch, min, sec]);
 
   const onAddMin = useCallback(
     (value: number) => {

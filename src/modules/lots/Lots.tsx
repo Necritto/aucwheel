@@ -16,6 +16,7 @@ import { BaseLotInterface } from "utils/interfaces/lots";
 
 import { LotsContainer, LotsWrapper, LotsTable, AddButton, DeleteButton } from "./styles";
 import Lot from "./Lot/Lot";
+import { toNumber } from "utils/helpers/toNumber";
 
 const Lots = () => {
   const lots = useSelector((state: LotsReducerInterface) => state.lotsReducer.lots, shallowEqual);
@@ -38,18 +39,18 @@ const Lots = () => {
 
   const onChangeHandler = useCallback(
     (id: string, value: string, name: string) => {
-      if (name === "title") {
-        dispatch(changeLotTitle(id, value));
-        return;
-      }
-
-      if (name === "total") {
-        dispatch(changeLotTotal(id, +value));
-        return;
-      }
-
-      if (name === "addToTotal") {
-        dispatch(changeAddToTotalValue(id, +value));
+      switch (name) {
+        case "title":
+          dispatch(changeLotTitle(id, value));
+          break;
+        case "total":
+          dispatch(changeLotTotal(id, toNumber(value)));
+          break;
+        case "addToTotal":
+          dispatch(changeAddToTotalValue(id, toNumber(value)));
+          break;
+        default:
+          return;
       }
     },
     [dispatch],
@@ -65,25 +66,24 @@ const Lots = () => {
 
   const onKeyPressedHandler = useCallback(
     (key: string, target: EventTarget & HTMLInputElement, id: string) => {
-      if (key === "Enter") {
-        const targetName = target.name;
-        const trimmedValue = target.value.trim();
+      if (key !== "Enter") return;
 
-        if (targetName === "title") {
+      const targetName = target.name;
+      const trimmedValue = target.value.trim();
+
+      switch (targetName) {
+        case "title":
           if (!!!trimmedValue) return alert("Incorrect value!");
           dispatch(changeLotTitle(id, trimmedValue));
-        }
-
-        if (targetName === "total") {
-          if (isNaN(+trimmedValue) || !!!trimmedValue) {
-            return alert("Incorrect value (must be a number)!");
-          }
-
-          dispatch(changeLotTotal(id, +trimmedValue));
-        }
-
-        target.blur();
+          break;
+        case "total":
+          dispatch(changeLotTotal(id, toNumber(trimmedValue)));
+          break;
+        default:
+          return;
       }
+
+      target.blur();
     },
     [dispatch],
   );
